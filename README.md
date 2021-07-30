@@ -33,3 +33,21 @@ source .venv/bin/activate
 ### Offline process to add/insert package details to the databas
 
 ### Running test cases
+
+Execute below command from src folder to run unit test cases
+
+```
+python3 -m unittest test_*.py
+```
+
+Execute below command from src folder to see code coverage
+
+```
+coverage run -m unittest test_*.py
+
+# to see report in the console
+coverage report
+
+# To show code coverate in web page
+coverage html
+```
