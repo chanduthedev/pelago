@@ -80,7 +80,7 @@ def download_and_extract_tarfile(package_name, package_version):
 
     except Exception as err:
         print(
-            f"In download_and_extract_tarfile, got exception :{str(err)}")
+            f"In download_and_extract_tarfile, {package_name} got exception :{str(err)}")
         return {"code": 40002, "message": str(err)}
 
 
@@ -104,8 +104,10 @@ def read_package_description(package_path, package_name):
         with open(pack_desc_file, "r") as inputfile:
 
             for each_line in inputfile:
-                if len(each_line.split(": ", 1)) == 2:
-                    key, value = each_line.strip().split(": ", 1)
+                split_line_list = each_line.split(": ", 1)
+                if len(split_line_list) == 2:
+                    key = split_line_list[0].strip()
+                    value = split_line_list[1].strip()
                     package_datails[key] = value
                 else:
                     print(f"Not a valid discription line: {each_line}")
