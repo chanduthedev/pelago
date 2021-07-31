@@ -1,5 +1,6 @@
 from flask import Flask, jsonify, request, make_response
-from utils import read_conf_file
+from pymongo import MongoClient
+from utils import read_conf_file, db_curser_to_list
 app = Flask(__name__)
 
 # reading conf parameters
@@ -20,6 +21,16 @@ db_name = app_config["db_config"]["db_name"]
 db_packages_table = app_config["db_config"]["db_packages_table"]
 db_authors_table = app_config["db_config"]["db_authors_table"]
 
+db_client = MongoClient(host=db_host, port=db_port)
+print("Connected to DB")
+
+db = db_client[db_name]
+packages_table = db[db_packages_table]
+print(f"{packages_table}")
+
+authors_table = db[db_authors_table]
+print(f"{authors_table}")
+
 
 @app.route('/search', methods=['GET'])
 def package_search():
@@ -27,14 +38,32 @@ def package_search():
         API to search given package name details from DB.
         Returns: response object with package details if found
     """
-    # read package name from query param
-    package_name = request.args.get('q')
+    try:
+        # read package name from query param
+        package_name = request.args.get('q')
 
-    return make_response(jsonify({
-        'code': 200,
-        'message': 'Success',
-        "data": {"package_name": package_name}
-    }), 200)
+        # returnint error message for empty package name
+        if not package_name:
+            print("# returnint error message for empty package name")
+            return make_response(jsonify({
+                'code': 40005,
+                'message': 'Package name cannot be empty'
+            }), 200)
+
+        print(f"In search api, package_name:{package_name}")
+        #  Searching for package in DB
+        found_package = packages_table.find({"Package": {"$eq": package_name}})
+        found_package_list = db_curser_to_list(found_package)
+        return make_response(jsonify({
+            'code': 200,
+            'message': 'Success',
+            "data": found_package_list
+        }), 200)
+    except Exception as err:
+        return make_response(jsonify({
+            'code': 40006,
+            'message': str(err)
+        }), 200)
 
 
 @app.errorhandler(400)

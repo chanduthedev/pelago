@@ -7,7 +7,7 @@ separator = os.path.sep
 db_client = MongoClient(host="localhost", port=27017)
 print("Connected to DB")
 
-db = db_client['prelago']
+db = db_client['pelago']
 packages_table = db['packages']
 print("Deleting existing packages collection if any in DB")
 packages_table.drop()
@@ -55,9 +55,11 @@ def main():
                 final_pack_details['Email'] = maintainer.split('<')[1][:-1]
                 inserted_author = authors_table.insert_one(
                     {"Name": maintainer.split('<')[0], "Email": maintainer.split('<')[1][:-1]})
-                print(inserted_author)
+                print(
+                    f"Inserted Name and email, generated id: {inserted_author.inserted_id}")
             inserted_package = packages_table.insert_one(final_pack_details)
-            print(inserted_package)
+            print(
+                f"Inserted package details, generated id: {inserted_package.inserted_id}")
         else:
             print(f"{pack_name} {pack_version} {download_resp['message']}")
 

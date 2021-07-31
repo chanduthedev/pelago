@@ -1,0 +1,80 @@
+openapi: 3.0.3
+info:
+  title: Pelago Assessment Test
+  description: Search package details for the given package name as a query parameter
+  version: v1
+servers:
+  - url: "http://localhost:7789"
+paths:
+  /search:
+    get:
+      summary: Searching for the given package name in the DB
+      operationId: package_search
+      parameters:
+        - in: query
+          name: q
+          schema:
+            type: string
+          required: true
+      responses:
+        "200":
+          description: Package found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PackageResponseData"
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BasicResponse"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BasicResponse"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BasicResponse"
+
+components:
+  schemas:
+    BasicResponse:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+    PackageData:
+      type: object
+      properties:
+        Package:
+          type: string
+        Title:
+          type: string
+        Version:
+          type: string
+        Description:
+          type: string
+        Date/Publication:
+          type: string
+        Maintainer:
+          type: string
+    PackageResponseData:
+      allOf:
+        - $ref: "#/components/schemas/BasicResponse"
+        - type: object
+          required:
+            - data
+          properties:
+            data:
+              $ref: "#/components/schemas/PackageData"

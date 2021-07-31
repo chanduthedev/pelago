@@ -119,3 +119,21 @@ def read_package_description(package_path, package_name):
         return {"code": 200,
                 "message": "Package data retrieved successfully",
                 "data": package_datails}
+
+
+def db_curser_to_list(pack_curser):
+    """
+    DB cursor object coverted into readable list of objects
+    by deleting _id property.
+
+    Args:
+        pack_curser (Object): DB cursor object
+
+    Returns:
+        list: list of found package details in json object
+    """
+    found_package_list = []
+    for package in pack_curser:
+        del package['_id']
+        found_package_list.append(package)
+    return found_package_list
