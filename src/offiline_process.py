@@ -1,13 +1,35 @@
+from pymongo import MongoClient
 import utils
 import os
 separator = os.path.sep
 
 
+db_client = MongoClient(host="localhost", port=27017)
+print("Connected to DB")
+
+db = db_client['prelago']
+packages_table = db['packages']
+print("Deleting existing packages collection if any in DB")
+packages_table.drop()
+packages_table = db['packages']
+print(f"{packages_table}")
+
+authors_table = db['authors']
+print("Deleting existing authors collection if any in DB")
+authors_table.drop()
+authors_table = db['authors']
+print(f"{authors_table}")
+
+
 def main():
-    package_details = utils.get_package_list(
+    response = utils.get_package_list(
         "http://cran.r-project.org/src/contrib/PACKAGES")
+    if response['code'] != 200:
+        print(response['message'])
+        exit()
+    package_details = response['data']
     # print(package_details)
-    counter = 5
+    counter = 50
     for pack_name, pack_version in package_details.items():
         print(f"Processing {pack_name}_{pack_version}")
         if not counter:
@@ -31,7 +53,11 @@ def main():
             if len(maintainer.split('<')) == 2:
                 final_pack_details['Name'] = maintainer.split('<')[0].strip()
                 final_pack_details['Email'] = maintainer.split('<')[1][:-1]
-            print(final_pack_details)
+                inserted_author = authors_table.insert_one(
+                    {"Name": maintainer.split('<')[0], "Email": maintainer.split('<')[1][:-1]})
+                print(inserted_author)
+            inserted_package = packages_table.insert_one(final_pack_details)
+            print(inserted_package)
         else:
             print(f"{pack_name} {pack_version} {download_resp['message']}")
 
