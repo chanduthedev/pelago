@@ -1,24 +1,11 @@
 from pymongo import MongoClient
 import utils
 import os
+from db_operations import DBOperations
 separator = os.path.sep
 
 
-db_client = MongoClient(host="localhost", port=27017)
-print("Connected to DB")
-
-db = db_client['pelago']
-packages_table = db['packages']
-print("Deleting existing packages collection if any in DB")
-packages_table.drop()
-packages_table = db['packages']
-print(f"{packages_table}")
-
-authors_table = db['authors']
-print("Deleting existing authors collection if any in DB")
-authors_table.drop()
-authors_table = db['authors']
-print(f"{authors_table}")
+db_instance = DBOperations('localhost', 27017)
 
 
 def main():
@@ -29,7 +16,7 @@ def main():
         exit()
     package_details = response['data']
     # print(package_details)
-    counter = 50
+    counter = 5
     for pack_name, pack_version in package_details.items():
         print(f"Processing {pack_name}_{pack_version}")
         if not counter:
@@ -53,11 +40,11 @@ def main():
             if len(maintainer.split('<')) == 2:
                 final_pack_details['Name'] = maintainer.split('<')[0].strip()
                 final_pack_details['Email'] = maintainer.split('<')[1][:-1]
-                inserted_author = authors_table.insert_one(
+                inserted_author = db_instance.add_to_authors(
                     {"Name": maintainer.split('<')[0], "Email": maintainer.split('<')[1][:-1]})
                 print(
                     f"Inserted Name and email, generated id: {inserted_author.inserted_id}")
-            inserted_package = packages_table.insert_one(final_pack_details)
+            inserted_package = db_instance.add_to_packages(final_pack_details)
             print(
                 f"Inserted package details, generated id: {inserted_package.inserted_id}")
         else:

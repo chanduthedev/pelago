@@ -1,5 +1,6 @@
 import unittest
 import utils
+from db_operations import DBOperations
 
 
 class TestUtils(unittest.TestCase):
@@ -42,9 +43,17 @@ class TestUtils(unittest.TestCase):
         resp = utils.get_package_list(
             "http://cran.r-project.org/src/contrib/PACKAGES")
         self.assertEqual(resp['code'], 200)
-        self.assertEqual(len(resp['data']), 17954)
+        self.assertEqual(len(resp['data']), 17949)
 
     def test_get_package_list_should_fail(self):
         resp = utils.get_package_list(
             "http://cran.r-project.org/src/contrib/PACKAGES11")
         self.assertEqual(resp['code'], 40004)
+
+    def test_find_package_in_db_success(self):
+        resp = utils.find_package('A3')
+        self.assertEqual(resp['message'], "Package details found.")
+
+    def test_find_package_in_db_not_found(self):
+        resp = utils.find_package('A4')
+        self.assertEqual(resp['message'], "No package details found.")

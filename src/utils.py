@@ -4,10 +4,13 @@ import tarfile
 import ssl
 import os
 import requests
+from db_operations import DBOperations
 separator = os.path.sep
 
 # temporary fix to access as a un-verified user
 ssl._create_default_https_context = ssl._create_unverified_context
+
+db_instane = DBOperations('localhost', 27017)
 
 
 def get_root_folder():
@@ -137,3 +140,30 @@ def db_curser_to_list(pack_curser):
         del package['_id']
         found_package_list.append(package)
     return found_package_list
+
+
+def find_package(package_name):
+    """[summary]
+
+    Args:
+        package_name ([type]): [description]
+
+    Returns:
+        [type]: [description]
+    """
+    try:
+        cur_search = db_instane.find_package(package_name)
+        found_package_list = db_curser_to_list(cur_search)
+        message = "Package details found."
+        if not found_package_list:
+            message = "No package details found."
+        return {
+            "code": 200,
+            "message": message,
+            "data": found_package_list
+        }
+    except Exception as err:
+        return {
+            "code": 50001,
+            "message": str(err)
+        }

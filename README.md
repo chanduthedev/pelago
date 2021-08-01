@@ -19,12 +19,21 @@ This is a repo for Pelago assessment test
 
 It is always better to use virtual environment to switch between Python versions.
 
+Execute below command to install virtualenv dependency package
+
 ```
 pip3 install virtualenv
 ```
 
+Execute below command to create virtual environment. `.venv` is name, you can give any name
+
 ```
 python -m venv .venv
+```
+
+Execute below command activate virtual environment.
+
+```
 source .venv/bin/activate
 ```
 
@@ -42,30 +51,34 @@ Execute below command to install all dependencies. Make sure that MongoDB is up 
 pip3 install -r requirements.txt
 ```
 
-Execute below command from src folder to run application server.
+Execute below command from `src` folder to run application server.
 
 ```
 python3 server.py
 ```
 
-### Offline process to add/insert package details to the databas
+### Offline process to add/insert package details to the database
+
+This is to insert all package details into the database(In this case MongoDB).
+
+Execute below command to insert.
+
+```
+python3 offiline_process.py
+
+```
 
 ### Running test cases
 
-Execute below command from src folder to run unit test cases. Make sure that MangoDB is up and running as some methods needs access to DB.
+Execute below command from `src` folder to run unit test cases. Make sure that MangoDB is up and running as some methods needs access to DB.
 
 ```
 python3 -m unittest test_*.py
 ```
 
-Execute below command from src folder to see code coverage
+Execute below command from `src` folder to see code coverage
 
 ```
-# Report inclides site packages
-coverage run -m unittest test_*.py
-
-# Without site packages
-coverage run --source . --omit ../.venv -m unittest test_*.py
 
 # to see report in the console
 coverage report
