@@ -64,7 +64,7 @@ This is to insert all package details into the database(In this case MongoDB).
 Execute below command to insert.
 
 ```
-python3 offiline_process.py
+python3 offline_process.py
 
 ```
 
