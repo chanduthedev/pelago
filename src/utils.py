@@ -38,7 +38,6 @@ def get_package_list(package_url):
         [type]: [description]
     """
     try:
-        print(f"In get_package_list, url:{package_url}")
         resp = requests.get(package_url)
         all_pack_details = str(resp.content).split('\\n\\n')
         all_pack_details_list = [str(each_pack).split('\\n')
@@ -118,7 +117,6 @@ def read_package_description(package_path, package_name):
         return {"code": 40003,
                 "message": "File not found"}
     else:
-        print(f"Retrieved package Details:{package_datails}")
         return {"code": 200,
                 "message": "Package data retrieved successfully",
                 "data": package_datails}

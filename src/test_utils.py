@@ -1,6 +1,5 @@
 import unittest
 import utils
-from db_operations import DBOperations
 
 
 class TestUtils(unittest.TestCase):
@@ -43,7 +42,7 @@ class TestUtils(unittest.TestCase):
         resp = utils.get_package_list(
             "http://cran.r-project.org/src/contrib/PACKAGES")
         self.assertEqual(resp['code'], 200)
-        self.assertEqual(len(resp['data']), 17949)
+        self.assertGreaterEqual(len(resp['data']), 17949)
 
     def test_get_package_list_should_fail(self):
         resp = utils.get_package_list(

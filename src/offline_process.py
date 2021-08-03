@@ -1,4 +1,3 @@
-from pymongo import MongoClient
 import utils
 import os
 from db_operations import DBOperations
@@ -11,17 +10,26 @@ db_instance = DBOperations('localhost', 27017)
 def main():
     response = utils.get_package_list(
         "http://cran.r-project.org/src/contrib/PACKAGES")
+    # deleting existing tables to avoid duplicates
+    db_instance.delete_packages_table()
+    db_instance.delete_authors_table()
+
+    # Creating new tables.
+    db_instance.create_packages_table
+    db_instance.create_authors_table
     if response['code'] != 200:
         print(response['message'])
         exit()
     package_details = response['data']
     # print(package_details)
-    counter = 5
+    # Processing 100 packages for now.
+    counter = 100
     for pack_name, pack_version in package_details.items():
         print(f"Processing {pack_name}_{pack_version}")
         if not counter:
             break
         counter -= 1
+
         download_resp = utils.download_and_extract_tarfile(
             pack_name, pack_version)
         if download_resp['code'] == 200:

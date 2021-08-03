@@ -79,10 +79,12 @@ python3 -m unittest test_*.py
 Execute below command from `src` folder to see code coverage
 
 ```
+# To generate code coverage
+coverage run --source . --omit ../.venv -m unittest test_*.py
 
 # to see report in the console
 coverage report
 
-# To show code coverate in web page
+# To show code coverage in the UI
 coverage html
 ```
