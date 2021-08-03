@@ -88,3 +88,7 @@ coverage report
 # To show code coverage in the UI
 coverage html
 ```
+
+### Code Covergae Report
+
+![](images/Code-Coverage-Report.png)
